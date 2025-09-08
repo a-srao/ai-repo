@@ -32,3 +32,4 @@ jobs:
           debug: true                     # enable debug logs for testing
           review_simple_changes: false    # skip very small changes
           review_comment_lgtm: false      # don’t comment “LGTM”
+          model: gpt-3.5-turbo
