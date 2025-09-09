@@ -1,5 +1,9 @@
 name: AI PR Review
 
+permissions:
+  contents: read
+  pull-requests: write
+
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -15,7 +19,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0   # Fetch full history for complete PR changes
+          fetch-depth: 0
 
       - name: Run CodeRabbit AI Review
         uses: coderabbitai/ai-pr-reviewer@latest
@@ -23,7 +27,8 @@ jobs:
           debug: true
           review_simple_changes: false
           review_comment_lgtm: false
-          model: gpt-3.5-turbo   # Use available model
+          openai_light_model: gpt-3.5-turbo    # valid input
+          openai_heavy_model: gpt-4            # optional, if available
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
