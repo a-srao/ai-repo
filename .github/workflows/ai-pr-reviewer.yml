@@ -1,12 +1,8 @@
-name: Code Review
-
-permissions:
-  contents: read
-  pull-requests: write
+name: AI PR Review
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]  # triggers on new commits/PRs
+    types: [opened, synchronize, reopened]
 
 concurrency:
   group: ${{ github.repository }}-${{ github.event.number || github.head_ref || github.sha }}-${{ github.workflow }}-pr
@@ -16,20 +12,18 @@ jobs:
   review:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout the repo so the bot has files to review
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # important for detecting all PR changes
+          fetch-depth: 0   # Fetch full history for complete PR changes
 
-      # Step 2: Run CodeRabbit AI Review
       - name: Run CodeRabbit AI Review
         uses: coderabbitai/ai-pr-reviewer@latest
+        with:
+          debug: true
+          review_simple_changes: false
+          review_comment_lgtm: false
+          model: gpt-3.5-turbo   # Use available model
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        with:
-          debug: true                     # enable debug logs for testing
-          review_simple_changes: false    # skip very small changes
-          review_comment_lgtm: false      # don’t comment “LGTM”
-          model: gpt-3.5-turbo
